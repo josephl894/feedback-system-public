@@ -1,0 +1,58 @@
+.feedback-form {
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.feedback-input {
+  width: 100%;
+  padding: 4px 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.3s;
+  margin-bottom: 6px;
+}
+
+.feedback-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cancel-button,
+.submit-button {
+  padding: 4px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+}
+
+.cancel-button {
+  background: #e0e0e0;
+  color: #666;
+}
+
+.cancel-button:hover {
+  background: #d0d0d0;
+}
+
+.submit-button {
+  background: #667eea;
+  color: white;
+}
+
+.submit-button:hover {
+  background: #5568d3;
+}
+

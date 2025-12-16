@@ -1,0 +1,278 @@
+.field-reply-container {
+  margin-top: 6px;
+  padding: 4px 8px;
+  background: #f9fafb;
+  border-radius: 4px;
+  border: 1px solid #e5e7eb;
+}
+
+.field-reply-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.field-reply-toggle {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.field-reply-toggle:hover {
+  background-color: #eff6ff;
+}
+
+.field-reply-expand {
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.field-reply-expand:hover {
+  background-color: #f3f4f6;
+}
+
+.field-reply-count {
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.field-reply-form {
+  margin-top: 6px;
+  padding: 6px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.field-reply-input {
+  width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.field-reply-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.field-reply-form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.field-reply-submit {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+
+.field-reply-submit:hover {
+  background: #2563eb;
+}
+
+.field-reply-cancel {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+
+.field-reply-cancel:hover {
+  background: #e5e7eb;
+}
+
+.field-reply-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-reply-item {
+  padding: 6px 8px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 4px;
+}
+
+.field-reply-content {
+  width: 100%;
+  position: relative;
+}
+
+.field-reply-header-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.field-reply-user-name {
+  font-weight: 500;
+  font-size: 12px;
+  color: #111827;
+}
+
+.field-reply-time {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.field-reply-text {
+  font-size: 13px;
+  color: #374151;
+  margin: 0 0 6px 0;
+  word-break: break-word;
+  line-height: 1.5;
+  padding-right: 0;
+}
+
+.field-reply-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  justify-content: flex-end;
+}
+
+.field-reply-delete {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.field-reply-delete:hover {
+  background-color: #fee2e2;
+}
+
+/* 已选择选项显示 */
+.field-reply-selected {
+  margin-top: 6px;
+  padding: 6px 8px;
+  background: #e0f2fe;
+  border-radius: 4px;
+  border: 1px solid #7dd3fc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  flex-wrap: wrap;
+}
+
+.field-reply-selected-label {
+  color: #0369a1;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.field-reply-selected-text {
+  color: #0c4a6e;
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.field-reply-edit {
+  background: none;
+  border: none;
+  color: #0369a1;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+  font-weight: 500;
+}
+
+.field-reply-edit:hover {
+  background-color: #bae6fd;
+}
+
+.field-reply-toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.submitted-hint-small {
+  color: #10b981;
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* 选项模式样式 */
+.field-reply-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.field-reply-option-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  font-size: 12px;
+}
+
+.field-reply-option-label:hover {
+  background-color: #f3f4f6;
+}
+
+.field-reply-option-input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.field-reply-option-text {
+  color: #374151;
+  font-weight: 400;
+  user-select: none;
+}
+

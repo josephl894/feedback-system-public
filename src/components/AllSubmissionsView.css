@@ -1,0 +1,148 @@
+.all-submissions-view {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.all-submissions-header {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.all-submissions-header .header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.all-submissions-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.all-submissions-header .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-button {
+  padding: 8px 16px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background: #5568d3;
+  transform: translateX(-2px);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.user-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.all-submissions-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.info-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.info-banner p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.markets-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+@media (min-width: 1400px) {
+  .markets-container {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+  .markets-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  .markets-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .markets-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 599px) {
+  .markets-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
