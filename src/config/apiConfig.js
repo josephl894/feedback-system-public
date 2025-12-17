@@ -39,13 +39,15 @@ export const USE_LOCAL_RANKINGS = getUseLocalRankings();
 // 在控制台显示当前使用的API模式
 if (import.meta.env.DEV) {
   console.log('🔧 API配置:');
-  console.log('  - 市场数据:', USE_EXTERNAL_API ? '外部API' : '本地API');
-  console.log('  - 反馈数据:', USE_LOCAL_FEEDBACK ? '本地API' : '外部API');
-  console.log('  - 排名数据:', USE_LOCAL_RANKINGS ? '本地API' : '外部API');
-  console.log('🔧 外部API地址: https://pipeline-api-production.up.railway.app');
+  console.log('  - 市场数据:', USE_EXTERNAL_API ? '外部API (通过Vite代理)' : '本地API');
+  console.log('  - 反馈数据:', USE_LOCAL_FEEDBACK ? '本地API' : '外部API (通过Vite代理)');
+  console.log('  - 排名数据:', USE_LOCAL_RANKINGS ? '本地API' : '外部API (通过Vite代理)');
+  console.log('🔧 /v1/* 请求代理到: http://localhost:8000 (yoyo-content API)');
+  console.log('🔧 /api/* 请求代理到: http://localhost:3001 (feedback Express服务器)');
 }
 
-// 外部API基础URL
+// 外部API基础URL (仅用于生产构建)
+// 开发环境: /v1/* 请求通过 Vite 代理转发到 http://localhost:8000 (yoyo-content)
 export const EXTERNAL_API_BASE = 'https://pipeline-api-production.up.railway.app';
 
 // 本地API基础URL - auto-detect for Vercel deployment
