@@ -19,11 +19,11 @@ export default defineConfig({
         target: 'http://localhost:3001',
         changeOrigin: true
       },
-      // 外部API代理 - 指向本地 yoyo-content API 服务器
+      // 外部API代理 - 指向 yoyo-content staging 服务器
       '/v1': {
-        target: 'http://localhost:8000',
+        target: 'https://pipeline-api-staging.up.railway.app',
         changeOrigin: true,
-        secure: false,
+        secure: true,
         rewrite: (path) => path // 保持路径不变
       }
     }

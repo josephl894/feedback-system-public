@@ -42,7 +42,7 @@ if (import.meta.env.DEV) {
   console.log('  - 市场数据:', USE_EXTERNAL_API ? '外部API (通过Vite代理)' : '本地API');
   console.log('  - 反馈数据:', USE_LOCAL_FEEDBACK ? '本地API' : '外部API (通过Vite代理)');
   console.log('  - 排名数据:', USE_LOCAL_RANKINGS ? '本地API' : '外部API (通过Vite代理)');
-  console.log('🔧 /v1/* 请求代理到: http://localhost:8000 (yoyo-content API)');
+  console.log('🔧 /v1/* 请求代理到: https://pipeline-api-staging.up.railway.app (yoyo-content staging)');
   console.log('🔧 /api/* 请求代理到: http://localhost:3001 (feedback Express服务器)');
 }
 
