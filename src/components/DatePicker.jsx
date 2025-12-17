@@ -78,23 +78,28 @@ function DatePicker({ selectedDate, onDateChange }) {
 
   const formatDisplayDate = (dateStr) => {
     if (!dateStr) return '选择日期'
+    // Parse as UTC (YYYY-MM-DD is interpreted as UTC midnight)
     const date = new Date(dateStr)
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const dateOnly = new Date(date)
-    dateOnly.setHours(0, 0, 0, 0)
-    
-    if (dateOnly.getTime() === today.getTime()) {
+
+    // Get today's date in UTC
+    const now = new Date()
+    const todayUTC = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`
+
+    if (dateStr === todayUTC) {
       return '今天'
     }
-    
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
-    if (dateOnly.getTime() === yesterday.getTime()) {
+
+    // Get yesterday in UTC
+    const yesterday = new Date(now)
+    yesterday.setUTCDate(yesterday.getUTCDate() - 1)
+    const yesterdayUTC = `${yesterday.getUTCFullYear()}-${String(yesterday.getUTCMonth() + 1).padStart(2, '0')}-${String(yesterday.getUTCDate()).padStart(2, '0')}`
+
+    if (dateStr === yesterdayUTC) {
       return '昨天'
     }
-    
-    return `${date.getMonth() + 1}月${date.getDate()}日`
+
+    // Use UTC methods to display the date
+    return `${date.getUTCMonth() + 1}月${date.getUTCDate()}日`
   }
 
   // 获取可用日期的Set，用于快速查找

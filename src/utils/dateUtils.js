@@ -3,15 +3,15 @@
  */
 
 /**
- * 格式化日期为 YYYY-MM-DD
+ * 格式化日期为 YYYY-MM-DD (UTC)
  * @param {Date|string} date - 日期对象或日期字符串
- * @returns {string} 格式化后的日期字符串
+ * @returns {string} 格式化后的日期字符串 (UTC)
  */
 export const formatDate = (date) => {
   if (!date) {
     date = new Date();
   }
-  
+
   if (typeof date === 'string') {
     // 如果已经是 YYYY-MM-DD 格式，直接返回
     if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
@@ -20,33 +20,34 @@ export const formatDate = (date) => {
     // 如果是其他格式，尝试解析
     date = new Date(date);
   }
-  
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  
+
+  // Use UTC methods for consistency with pipeline
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
   return `${year}-${month}-${day}`;
 };
 
 /**
- * 获取今天的日期字符串
- * @returns {string} YYYY-MM-DD格式的今天日期
+ * 获取今天的日期字符串 (UTC)
+ * @returns {string} YYYY-MM-DD格式的今天日期 (UTC)
  */
 export const getToday = () => {
   return formatDate(new Date());
 };
 
 /**
- * 从日期字符串获取Date对象
+ * 从日期字符串获取Date对象 (UTC midnight)
  * @param {string} dateStr - YYYY-MM-DD格式的日期字符串
- * @returns {Date} Date对象
+ * @returns {Date} Date对象 (UTC midnight)
  */
 export const parseDate = (dateStr) => {
   if (!dateStr) {
     return new Date();
   }
-  // 添加时间部分以确保正确解析
-  return new Date(dateStr + 'T00:00:00');
+  // YYYY-MM-DD is parsed as UTC midnight by default
+  return new Date(dateStr);
 };
 
 /**
@@ -62,24 +63,24 @@ export const isValidDateFormat = (dateStr) => {
 };
 
 /**
- * 获取日期的前一天
+ * 获取日期的前一天 (UTC)
  * @param {string} dateStr - YYYY-MM-DD格式的日期字符串
- * @returns {string} 前一天的日期字符串
+ * @returns {string} 前一天的日期字符串 (UTC)
  */
 export const getPreviousDay = (dateStr) => {
   const date = parseDate(dateStr);
-  date.setDate(date.getDate() - 1);
+  date.setUTCDate(date.getUTCDate() - 1);
   return formatDate(date);
 };
 
 /**
- * 获取日期的后一天
+ * 获取日期的后一天 (UTC)
  * @param {string} dateStr - YYYY-MM-DD格式的日期字符串
- * @returns {string} 后一天的日期字符串
+ * @returns {string} 后一天的日期字符串 (UTC)
  */
 export const getNextDay = (dateStr) => {
   const date = parseDate(dateStr);
-  date.setDate(date.getDate() + 1);
+  date.setUTCDate(date.getUTCDate() + 1);
   return formatDate(date);
 };
 
