@@ -4,7 +4,7 @@ import MarketCard from './MarketCard'
 import RatingModal from './RatingModal'
 import DatePicker from './DatePicker'
 import AllSubmissionsView from './AllSubmissionsView'
-import { getMarkets, getFeedbacksByDate, getRankings } from '../utils/apiClient'
+import { getMarkets, getFeedbacksByDate, getRankings, createRating, getRatings } from '../utils/apiClient'
 import { getToday, formatDate } from '../utils/dateUtils'
 import { USE_EXTERNAL_API, USE_LOCAL_FEEDBACK, USE_LOCAL_RANKINGS } from '../config/apiConfig'
 import './Dashboard.css'
@@ -62,19 +62,32 @@ function Dashboard({ user, onLogout }) {
   // 检查用户是否已提交数据
   const checkSubmissionStatus = async () => {
     try {
-      const dateStr = selectedDate 
-        ? formatDate(selectedDate) 
+      const dateStr = selectedDate
+        ? formatDate(selectedDate)
         : getToday();
-      
+
       console.log('🔍 [检查提交状态] 用户ID:', user.id, '日期:', dateStr);
-      
-      // 检查该日期下是否有该用户的评分数据
-      const response = await axios.get(`/api/ratings/check-submission?userId=${user.id}&date=${dateStr}`)
-      const submitted = response.data.hasSubmitted || false
-      
-      console.log('✅ [检查提交状态] API响应:', response.data);
+
+      // 检查是否使用外部API（12.4特殊处理除外）
+      const useLocalForTest = dateStr === '2025-12-04';
+
+      let submitted = false;
+
+      if (USE_EXTERNAL_API && !useLocalForTest) {
+        // 使用外部API检查是否有该用户的评分数据
+        console.log('📡 [检查提交状态] 使用外部API检查');
+        const response = await getRatings({ user_id: user.id, date: dateStr });
+        submitted = response?.ratings?.length > 0 || false;
+        console.log('✅ [检查提交状态] 外部API响应:', response);
+      } else {
+        // 使用本地API
+        const response = await axios.get(`/api/ratings/check-submission?userId=${user.id}&date=${dateStr}`)
+        submitted = response.data.hasSubmitted || false
+        console.log('✅ [检查提交状态] 本地API响应:', response.data);
+      }
+
       console.log('✅ [检查提交状态] 提交状态:', submitted);
-      
+
       setHasSubmitted(submitted)
       return submitted
     } catch (error) {
@@ -372,11 +385,31 @@ function Dashboard({ user, onLogout }) {
           const marketId = market['Market ID'] || market.marketId || market.id;
           if (marketId) {
             try {
-              const dateStr = selectedDate 
-                ? formatDate(selectedDate) 
+              const dateStr = selectedDate
+                ? formatDate(selectedDate)
                 : getToday();
-              const ratingResponse = await axios.get(`/api/ratings/${marketId}/${user.id}?date=${dateStr}`);
-              const rating = ratingResponse.data.rating || 0;
+
+              // 检查是否使用外部API（12.4特殊处理除外）
+              const useLocalForTest = dateStr === '2025-12-04';
+
+              let rating = 0;
+              if (USE_EXTERNAL_API && !useLocalForTest) {
+                // 使用外部API获取评分
+                const response = await getRatings({
+                  market_id: marketId,
+                  user_id: user.id,
+                  date: dateStr
+                });
+                // 从返回的ratings数组中获取第一条评分记录
+                if (response?.ratings && response.ratings.length > 0) {
+                  rating = response.ratings[0].rating || 0;
+                }
+              } else {
+                // 使用本地API
+                const ratingResponse = await axios.get(`/api/ratings/${marketId}/${user.id}?date=${dateStr}`);
+                rating = ratingResponse.data.rating || 0;
+              }
+
               if (rating > 0) {
                 savedRatings[marketId] = Number(rating);
               }
@@ -814,19 +847,16 @@ function Dashboard({ user, onLogout }) {
         : getToday();
       
       console.log('⭐ [保存评分] 提交评分到数据库:', { marketId, userId: user.id, rating, date: dateStr });
-      
+
       // 检查是否使用外部API（12.4特殊处理除外）
       const useLocalForTest = dateStr === '2025-12-04';
-      
+
       if (USE_EXTERNAL_API && !useLocalForTest) {
-        // 使用外部API保存评分
-        // 注意：外部API可能没有单独的ratings端点，评分可能需要通过feedback端点提交
-        // 或者评分是feedback的一部分
-        // 暂时先尝试使用本地API，因为外部API没有ratings端点
-        console.log('📡 [保存评分] 外部API没有ratings端点，使用本地API保存');
-        await axios.post('/api/ratings', {
-          marketId,
-          userId: user.id,
+        // 使用外部API保存评分 (yoyo-content /v1/ratings)
+        console.log('📡 [保存评分] 使用外部API保存评分');
+        await createRating({
+          market_id: marketId,
+          user_id: user.id,
           rating,
           date: dateStr
         });

@@ -5,6 +5,8 @@ import RatingStars from './RatingStars'
 import FieldReply from './FieldReply'
 import axios from 'axios'
 import { formatDate, getToday } from '../utils/dateUtils'
+import { getRatings } from '../utils/apiClient'
+import { USE_EXTERNAL_API } from '../config/apiConfig'
 import './MarketCard.css'
 
 function MarketCard({ market, feedbacks, currentUser, onAddFeedback, onUpdateFeedback, onDeleteFeedback, onRate, onAddReply, onDeleteReply, ranking, selectedDate, onAddFieldReply, onDeleteFieldReply, pendingRating, pendingFieldReplies = {}, hasSubmitted = false, useAverageRatingForColor = false, readOnly = false }) {
@@ -137,12 +139,32 @@ function MarketCard({ market, feedbacks, currentUser, onAddFeedback, onUpdateFee
 
   const loadUserRating = async () => {
     try {
-      const dateStr = selectedDate 
-        ? formatDate(selectedDate) 
+      const dateStr = selectedDate
+        ? formatDate(selectedDate)
         : getToday();
-      const response = await axios.get(`/api/ratings/${market['Market ID']}/${currentUser.id}?date=${dateStr}`)
+
+      // 检查是否使用外部API（12.4特殊处理除外）
+      const useLocalForTest = dateStr === '2025-12-04';
+
+      let rating = 0;
+      if (USE_EXTERNAL_API && !useLocalForTest) {
+        // 使用外部API获取评分
+        const response = await getRatings({
+          market_id: market['Market ID'],
+          user_id: currentUser.id,
+          date: dateStr
+        });
+        // 从返回的ratings数组中获取第一条评分记录
+        if (response?.ratings && response.ratings.length > 0) {
+          rating = response.ratings[0].rating || 0;
+        }
+      } else {
+        // 使用本地API
+        const response = await axios.get(`/api/ratings/${market['Market ID']}/${currentUser.id}?date=${dateStr}`);
+        rating = response.data.rating || 0;
+      }
+
       // 确保rating是数字类型
-      const rating = response.data.rating || 0
       const ratingValue = Number(rating)
       setUserRating(isNaN(ratingValue) ? 0 : ratingValue)
     } catch (error) {
