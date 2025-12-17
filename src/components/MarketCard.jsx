@@ -5,7 +5,7 @@ import RatingStars from './RatingStars'
 import FieldReply from './FieldReply'
 import axios from 'axios'
 import { formatDate, getToday } from '../utils/dateUtils'
-import { getRatings } from '../utils/apiClient'
+import { getReviews } from '../utils/apiClient'
 import { USE_EXTERNAL_API } from '../config/apiConfig'
 import './MarketCard.css'
 
@@ -148,15 +148,15 @@ function MarketCard({ market, feedbacks, currentUser, onAddFeedback, onUpdateFee
 
       let rating = 0;
       if (USE_EXTERNAL_API && !useLocalForTest) {
-        // 使用外部API获取评分
-        const response = await getRatings({
+        // 使用外部API获取评论
+        const response = await getReviews({
           market_id: market['Market ID'],
           user_id: currentUser.id,
           date: dateStr
         });
-        // 从返回的ratings数组中获取第一条评分记录
-        if (response?.ratings && response.ratings.length > 0) {
-          rating = response.ratings[0].rating || 0;
+        // 从返回的reviews数组中获取第一条评论记录
+        if (response?.reviews && response.reviews.length > 0) {
+          rating = response.reviews[0].rating || 0;
         }
       } else {
         // 使用本地API

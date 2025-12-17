@@ -331,74 +331,73 @@ export const createSimpleFeedback = async (simpleFeedback) => {
   return createFeedback(fullFeedbackData);
 };
 
-// ==================== 评分相关 ====================
+// ==================== 统一评论/评分相关 (market_reviews) ====================
 
 /**
- * 获取所有评分
+ * 获取评论列表
  * @param {Object} params - 查询参数
- * @param {string} params.marketId - 市场ID筛选
- * @param {string} params.userId - 用户ID筛选
+ * @param {string} params.market_id - 市场ID筛选
+ * @param {string} params.user_id - 用户ID筛选
+ * @param {string} params.date - 日期筛选
+ * @returns {Promise<Object>} { reviews: [], total: number }
  */
-export const getRatings = async (params = {}) => {
-  const response = await apiClient.get(`${API_PREFIX}/ratings`, { params });
+export const getReviews = async (params = {}) => {
+  const response = await apiClient.get(`${API_PREFIX}/reviews`, { params });
   return response.data;
 };
 
 /**
- * 获取特定评分
- * @param {string} id - 评分ID
+ * 获取特定用户对特定市场的评论
+ * @param {string} marketId - 市场ID
+ * @param {string} userId - 用户ID
+ * @returns {Promise<Object>} 评论数据
  */
-export const getRatingById = async (id) => {
-  const response = await apiClient.get(`${API_PREFIX}/ratings/${id}`);
+export const getReview = async (marketId, userId) => {
+  const response = await apiClient.get(`${API_PREFIX}/reviews/${marketId}/${userId}`);
   return response.data;
 };
 
 /**
- * 创建新评分
- * @param {Object} ratingData - 评分数据
- * @param {string} ratingData.marketId - 市场ID
- * @param {string} ratingData.userId - 用户ID
- * @param {number} ratingData.rating - 评分 (1, 2, 或 3，分别代表一般、良好、优秀)
+ * 创建或更新评论（upsert）
+ * @param {Object} reviewData - 评论数据
+ * @param {string} reviewData.market_id - 市场ID
+ * @param {string} reviewData.user_id - 用户ID
+ * @param {number} reviewData.rating - 评分 (1-3)
+ * @param {string} reviewData.date - 日期 (YYYY-MM-DD)
+ * @param {string} reviewData.question_feedback - 问题反馈（可选）
+ * @param {string} reviewData.description_feedback - 描述反馈（可选）
+ * @param {string} reviewData.overall_comment - 总体评论（可选）
+ * @returns {Promise<Object>} 创建/更新的评论
  */
-export const createRating = async (ratingData) => {
-  const response = await apiClient.post(`${API_PREFIX}/ratings`, ratingData);
+export const upsertReview = async (reviewData) => {
+  const response = await apiClient.post(`${API_PREFIX}/reviews`, reviewData);
   return response.data;
 };
 
 /**
- * 更新评分
- * @param {string} id - 评分ID
- * @param {Object} ratingData - 更新的评分数据
+ * 删除评论
+ * @param {string} marketId - 市场ID
+ * @param {string} userId - 用户ID
  */
-export const updateRating = async (id, ratingData) => {
-  const response = await apiClient.put(`${API_PREFIX}/ratings/${id}`, ratingData);
+export const deleteReview = async (marketId, userId) => {
+  const response = await apiClient.delete(`${API_PREFIX}/reviews/${marketId}/${userId}`);
   return response.data;
 };
 
 /**
- * 删除评分
- * @param {string} id - 评分ID
- */
-export const deleteRating = async (id) => {
-  const response = await apiClient.delete(`${API_PREFIX}/ratings/${id}`);
-  return response.data;
-};
-
-/**
- * 获取排名数据（从 feedmarket 表获取）
+ * 获取排名数据（基于market_reviews表聚合）
  * @param {Object} params - 查询参数
  * @param {string} params.date - 日期筛选 (YYYY-MM-DD)
  * @param {Array<string>} params.marketIds - 市场ID列表（可选，用于过滤）
- * @param {number} params.limit - 返回数量
- * @returns {Promise<Array>} 排名数据数组
+ * @returns {Promise<Object>} { rankings: [], total: number }
  */
 export const getRankings = async (params = {}) => {
   const { date, marketIds } = params;
-  
-  console.log('📡 [getRankings] 从 feedmarket 表获取排名数据');
+
+  console.log('📡 [getRankings] 从 market_reviews 表获取排名数据');
   console.log('📡 [getRankings] 日期:', date);
   console.log('📡 [getRankings] 市场ID列表:', marketIds);
-  
+
   try {
     // 构建查询参数
     const queryParams = {};
@@ -406,23 +405,44 @@ export const getRankings = async (params = {}) => {
     if (marketIds && Array.isArray(marketIds) && marketIds.length > 0) {
       queryParams.market_ids = marketIds.join(',');
     }
-    if (params.limit) queryParams.limit = params.limit;
-    
-    // 可能使用 /v1/rankings 或 /v1/feedmarket/rankings 端点
+
     const response = await apiClient.get(`${API_PREFIX}/rankings`, { params: queryParams });
-    
-    console.log('✅ [getRankings] 成功获取排名数据，数量:', response.data?.length || 0);
-    return response.data || [];
+
+    console.log('✅ [getRankings] 成功获取排名数据');
+    // API returns { rankings: [], total: number }
+    return response.data?.rankings || [];
   } catch (error) {
     // 处理404错误（该日期没有数据）
     if (error.response?.status === 404) {
       console.log(`ℹ️ [getRankings] 日期 ${date} 没有排名数据（404是正常的）`);
       return [];
     }
-    
+
     console.error('❌ [getRankings] 请求失败:', error);
     throw error;
   }
+};
+
+// ==================== 兼容旧API的别名 ====================
+// 保持向后兼容，旧代码仍可使用这些函数名
+
+/**
+ * @deprecated 使用 upsertReview 代替
+ */
+export const createRating = async (ratingData) => {
+  return upsertReview(ratingData);
+};
+
+/**
+ * @deprecated 使用 getReviews 代替
+ */
+export const getRatings = async (params = {}) => {
+  const response = await getReviews(params);
+  // 转换响应格式以保持兼容性
+  return {
+    ratings: response.reviews || [],
+    total: response.total || 0
+  };
 };
 
 // ==================== 管理员功能 ====================

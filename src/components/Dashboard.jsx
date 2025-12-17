@@ -4,7 +4,7 @@ import MarketCard from './MarketCard'
 import RatingModal from './RatingModal'
 import DatePicker from './DatePicker'
 import AllSubmissionsView from './AllSubmissionsView'
-import { getMarkets, getFeedbacksByDate, getRankings, createRating, getRatings } from '../utils/apiClient'
+import { getMarkets, getFeedbacksByDate, getRankings, upsertReview, getReviews } from '../utils/apiClient'
 import { getToday, formatDate } from '../utils/dateUtils'
 import { USE_EXTERNAL_API, USE_LOCAL_FEEDBACK, USE_LOCAL_RANKINGS } from '../config/apiConfig'
 import './Dashboard.css'
@@ -74,10 +74,10 @@ function Dashboard({ user, onLogout }) {
       let submitted = false;
 
       if (USE_EXTERNAL_API && !useLocalForTest) {
-        // 使用外部API检查是否有该用户的评分数据
+        // 使用外部API检查是否有该用户的评论数据
         console.log('📡 [检查提交状态] 使用外部API检查');
-        const response = await getRatings({ user_id: user.id, date: dateStr });
-        submitted = response?.ratings?.length > 0 || false;
+        const response = await getReviews({ user_id: user.id, date: dateStr });
+        submitted = response?.reviews?.length > 0 || false;
         console.log('✅ [检查提交状态] 外部API响应:', response);
       } else {
         // 使用本地API
@@ -394,15 +394,15 @@ function Dashboard({ user, onLogout }) {
 
               let rating = 0;
               if (USE_EXTERNAL_API && !useLocalForTest) {
-                // 使用外部API获取评分
-                const response = await getRatings({
+                // 使用外部API获取评论
+                const response = await getReviews({
                   market_id: marketId,
                   user_id: user.id,
                   date: dateStr
                 });
-                // 从返回的ratings数组中获取第一条评分记录
-                if (response?.ratings && response.ratings.length > 0) {
-                  rating = response.ratings[0].rating || 0;
+                // 从返回的reviews数组中获取第一条评论记录
+                if (response?.reviews && response.reviews.length > 0) {
+                  rating = response.reviews[0].rating || 0;
                 }
               } else {
                 // 使用本地API
@@ -852,9 +852,9 @@ function Dashboard({ user, onLogout }) {
       const useLocalForTest = dateStr === '2025-12-04';
 
       if (USE_EXTERNAL_API && !useLocalForTest) {
-        // 使用外部API保存评分 (yoyo-content /v1/ratings)
-        console.log('📡 [保存评分] 使用外部API保存评分');
-        await createRating({
+        // 使用外部API保存评论 (yoyo-content /v1/reviews)
+        console.log('📡 [保存评分] 使用外部API保存评论');
+        await upsertReview({
           market_id: marketId,
           user_id: user.id,
           rating,
