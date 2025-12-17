@@ -979,35 +979,40 @@ function Dashboard({ user, onLogout }) {
   }, [])
 
   // 验证必填项
+  // 3星评分时，描述和标题回复变为可选
   const validateRequiredFields = () => {
     const errors = []
-    
+
     markets.forEach((market, index) => {
       const marketId = market['Market ID'] || market.marketId || market.id
       const cardErrors = []
-      
-      // 检查评分
-      if (!pendingRatings[marketId] || pendingRatings[marketId] === 0) {
+      const rating = pendingRatings[marketId]
+
+      // 检查评分（始终必填）
+      if (!rating || rating === 0) {
         cardErrors.push({ type: 'rating', message: '请为这条预测评分' })
       }
-      
-      // 检查描述回复（选项选择）
-      const descriptionReply = pendingFieldReplies[marketId]?.['Description']
-      if (!descriptionReply || descriptionReply.trim() === '') {
-        cardErrors.push({ type: 'description', message: '请选择描述的评价选项' })
+
+      // 3星评分时，描述和标题回复变为可选
+      if (rating !== 3) {
+        // 检查描述回复（选项选择）
+        const descriptionReply = pendingFieldReplies[marketId]?.['Description']
+        if (!descriptionReply || descriptionReply.trim() === '') {
+          cardErrors.push({ type: 'description', message: '请选择描述的评价选项' })
+        }
+
+        // 检查标题回复（选项选择）
+        const questionReply = pendingFieldReplies[marketId]?.['Question']
+        if (!questionReply || questionReply.trim() === '') {
+          cardErrors.push({ type: 'question', message: '请选择标题的评价选项' })
+        }
       }
-      
-      // 检查标题回复（选项选择）
-      const questionReply = pendingFieldReplies[marketId]?.['Question']
-      if (!questionReply || questionReply.trim() === '') {
-        cardErrors.push({ type: 'question', message: '请选择标题的评价选项' })
-      }
-      
+
       if (cardErrors.length > 0) {
         errors.push({ marketId, index, errors: cardErrors })
       }
     })
-    
+
     return errors
   }
 

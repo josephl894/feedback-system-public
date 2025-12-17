@@ -201,7 +201,7 @@ function MarketCard({ market, feedbacks, currentUser, onAddFeedback, onUpdateFee
                 hasSubmitted={hasSubmitted}
                 showOnlyCurrentUser={!readOnly}
               />
-              {!hasSubmitted && !pendingFieldReplies['Question'] && (
+              {!hasSubmitted && !pendingFieldReplies['Question'] && userRating !== 3 && (
                 <span className="required-hint">* 必填</span>
               )}
             </div>
@@ -244,7 +244,7 @@ function MarketCard({ market, feedbacks, currentUser, onAddFeedback, onUpdateFee
                 hasSubmitted={hasSubmitted}
                 showOnlyCurrentUser={!readOnly}
               />
-              {!hasSubmitted && !pendingFieldReplies['Description'] && (
+              {!hasSubmitted && !pendingFieldReplies['Description'] && userRating !== 3 && (
                 <span className="required-hint">* 必填</span>
               )}
             </div>
