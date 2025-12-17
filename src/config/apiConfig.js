@@ -48,8 +48,15 @@ if (import.meta.env.DEV) {
 // 外部API基础URL
 export const EXTERNAL_API_BASE = 'https://pipeline-api-production.up.railway.app';
 
-// 本地API基础URL
-export const LOCAL_API_BASE = 'http://localhost:3001';
+// 本地API基础URL - auto-detect for Vercel deployment
+const getLocalApiBase = () => {
+  // In production (Vercel), use relative paths
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return '';  // Use relative paths on Vercel
+  }
+  return 'http://localhost:3001';
+};
+export const LOCAL_API_BASE = getLocalApiBase();
 
 // API版本前缀
 export const API_VERSION = '/v1';

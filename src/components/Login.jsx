@@ -21,12 +21,6 @@ function Login({ onLogin, onSwitchToRegister }) {
     return Math.abs(hash).toString()
   }
 
-  // 管理员配置
-  const ADMIN_CONFIG = {
-    username: 'admin',
-    password: 'admin123' // 可以修改为更安全的密码
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
